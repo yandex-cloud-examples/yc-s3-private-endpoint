@@ -47,6 +47,7 @@
 - При развертывании ВМ с NAT в нескольких зонах доступности рекомендуется указывать четное число ВМ для их равномерного распределения по зонам доступности.
 - Выбирая количество ВМ с NAT, следует учитывать [локальность при обработке трафика внутренним балансировщиком](https://cloud.yandex.ru/docs/network-load-balancer/concepts/specifics#nlb-int-locality).
 - После ввода решения в эксплуатацию рекомендуется уменьшать количество ВМ с NAT или изменять список зон доступности в параметре `yc_availability_zones` только в заранее запланированный период времени. В процессе применения изменений возможны прерывания в обработке трафика.
+- Если при возрастании нагрузки к Object Storage внутри ВМ с NAT наблюдается большое значение метрики `CPU steal time`, то для ВМ с NAT рекомендуется включить [программно-ускоренную сеть](https://cloud.yandex.ru/ru/docs/vpc/concepts/software-accelerated-network).
 - По умолчанию доступ к бакету в Object Storage разрешен через консоль управления Yandex Cloud. Это разрешение можно отменить с помощью параметра `bucket_console_access = false`. 
 - Если не указать параметр `mgmt_ip` при `bucket_private_access = true`, то развертывание решения с помощью Terraform на рабочей станции будет завершаться с ошибкой доступа к бакету.
 - В случае использования собственного DNS сервера в его настройках необходимо создать ресурсные `A` записи вида:
@@ -68,9 +69,11 @@
 
 3. Проверьте наличие учетной записи в облаке с правами `admin` на каталог
 
-4. [Установите Git](https://github.com/git-guides/install-git)
+4. [Установите и настройте Yandex Cloud CLI](https://cloud.yandex.ru/docs/cli/quickstart)
 
-5. Проверьте квоты в облаке, чтобы была возможность развернуть ресурсы в сценарии:
+5. [Установите Git](https://github.com/git-guides/install-git)
+
+6. Проверьте квоты в облаке, чтобы была возможность развернуть ресурсы в сценарии:
 
     <details>
     <summary>Посмотреть справочную информацию по количеству ресурсов, создаваемых в сценарии</summary>
@@ -99,16 +102,16 @@
     </details>
 
 
-6. Перед развёртыванием решения уже должен существовать каталог облачных ресурсов в Yandex Cloud, в котором будут размещаться компоненты решения.
+7. Перед развёртыванием решения уже должен существовать каталог облачных ресурсов в Yandex Cloud, в котором будут размещаться компоненты решения.
 
 
 ## Развертывание Terraform сценария
 
-1. На вашей рабочей станции склонируйте [репозиторий](https://github.com/yandex-cloud/yc-architect-solution-library/) `yandex-cloud/yc-architect-solution-library` из GitHub и перейдите в папку сценария `yc-s3-private-endpoint`:
+1. На вашей рабочей станции склонируйте [репозиторий](https://github.com/yandex-cloud-examples/yc-s3-private-endpoint/) `yandex-cloud-examples/yc-s3-private-endpoint` из GitHub и перейдите в папку сценария `yc-s3-private-endpoint`:
     ```bash
-    git clone https://github.com/yandex-cloud/yc-architect-solution-library.git
+    git clone https://github.com/yandex-cloud-examples/yc-s3-private-endpoint.git
     
-    cd yc-architect-solution-library/yc-s3-private-endpoint
+    cd yc-s3-private-endpoint
     ```
 
 2. Настройте окружение для развертывания ([подробности](https://cloud.yandex.ru/docs/tutorials/infrastructure-management/terraform-quickstart#get-credentials)):
@@ -133,8 +136,8 @@
     | `mgmt_ip` | да | Публичный IP-адрес рабочей станции, на которой происходит развертывание Terraform сценария. Используется для разрешения рабочей станции выполнять действия с бакетом в процессе развертывания Terraform. Требует указания, когда параметр `bucket_private_access` имеет значение `true`. | `string` | `A.A.A.A` |
     | `trusted_cloud_nets` | да | Список агрегированных префиксов облачных подсетей, для которых разрешен доступ к Object Storage. Используется во входящем правиле групп безопасности для ВМ с NAT.  | `list(string)` | `["10.0.0.0/8", "192.168.0.0/16"]` |
     | `vm_username` | - | Имя пользователя для ВМ с NAT и тестовой ВМ. | `string` | `admin` |
-    | `s3_ip` | нет | Публичный IP-адрес сервиса Object Storage. | `string` | `213.180.193.243` |
-    | `s3_fqdn` | нет | Доменное имя сервиса Object Storage. | `string` | `storage.yandexcloud.net` |  
+    | `s3_ip` | - | Публичный IP-адрес сервиса Object Storage. | `string` | `213.180.193.243` |
+    | `s3_fqdn` | - | Доменное имя сервиса Object Storage. | `string` | `storage.yandexcloud.net` |  
     
     </details>
 

@@ -15,13 +15,14 @@ variable "yc_availability_zones" {
   description = "List of Yandex Cloud availability zones for deploying NAT instances"
   default = [
     "ru-central1-a",
-    "ru-central1-b"
+    "ru-central1-b",
+    "ru-central1-d"
   ]
 }
 
 variable "subnet_prefix_list" {
   type        = list(string)
-  description = "List of prefixes for NAT instances subnets. One prefix per availability zone in order: ru-central1-a, ru-central1-b, etc."
+  description = "List of prefixes for NAT instances subnets. One prefix per availability zone in order: ru-central1-a, ru-central1-b, ru-central1-d"
   default     = ["10.10.1.0/24", "10.10.2.0/24", "10.10.3.0/24"]
 }
 
