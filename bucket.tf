@@ -46,7 +46,7 @@ resource "yandex_storage_bucket" "s3_bucket" {
       ],
       "Condition": {
         "StringLike": {
-          "aws:referer": "https://console.cloud.yandex.*/folders/*/storage/buckets/s3-bucket-${random_string.bucket_suffix.result}*"
+          "aws:referer": "https://console.yandex.cloud/folders/*/storage/buckets/s3-bucket-${random_string.bucket_suffix.result}*"
         }
       }
     }
